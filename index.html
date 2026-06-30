@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>VRG Cornhole</title>
+<style>
+  :root {
+    --bg:      #0f1117;
+    --bg2:     #171b25;
+    --bg3:     #1e2330;
+    --bg4:     #252a38;
+    --accent:  #f4a825;
+    --green:   #3dba78;
+    --red:     #e05c5c;
+    --text:    #f0f0f0;
+    --text2:   #9aa0b4;
+    --text3:   #5c6280;
+    --border:  #2a2f42;
+    --border2: #363c54;
+    --r:       10px;
+    --rl:      16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .app-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .app-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 1px;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 4px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main { flex: 1; padding: 20px; overflow-y: auto; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+  }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 12px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--r);
+    color: var(--text);
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: 48px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  input:focus, select:focus { border-color: var(--accent); }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239aa0b4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--r);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 50px;
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0f1117;
+  }
+
+  .btn-primary:hover { background: #e09818; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: var(--bg4);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-danger {
+    background: var(--bg4);
+    color: var(--red);
+    border: 1px solid var(--border);
+    width: auto;
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  /* ── TEAM LIST ── */
+  .team-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .team-info { flex: 1; min-width: 0; }
+
+  .team-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .team-players {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .team-record {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+
+  .team-record .games-count {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  /* ── OPEN TO PLAY ── */
+  .available-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .available-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  .available-info { flex: 1; min-width: 0; }
+  .available-name { font-size: 15px; font-weight: 600; }
+  .available-note { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* ── STANDINGS ── */
+  .standing-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+
+  .standing-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .standing-rank {
+    font-size: 18px;
+    font-weight: 700;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .rank-1 { color: #ffd700; }
+  .rank-2 { color: #c0c0c0; }
+  .rank-3 { color: #cd7f32; }
+
+  .standing-info { flex: 1; min-width: 0; }
+  .standing-name { font-size: 15px; font-weight: 600; }
+  .standing-players { font-size: 12px; color: var(--text2); }
+
+  .standing-stats {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .standing-rating {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .standing-record {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .confidence-bar {
+    height: 4px;
+    background: var(--bg4);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .provisional-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 6px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* ── MATCH LOG ── */
+  .score-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ── RULES ── */
+  .rules-section {
+    margin-bottom: 20px;
+  }
+
+  .rules-section h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rules-section p,
+  .rules-section li {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .rules-section ul { padding-left: 18px; }
+
+  .prize-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border-radius: var(--r);
+    margin-bottom: 8px;
+  }
+
+  .prize-emoji { font-size: 22px; }
+
+  .prize-info { flex: 1; }
+  .prize-place { font-size: 14px; font-weight: 600; color: var(--text); }
+  .prize-desc { font-size: 13px; color: var(--text2); }
+
+  select[multiple] {
+    background-image: none;
+    padding-right: 14px;
+    height: auto;
+    border-radius: var(--r);
+  }
+
+  select[multiple] option {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 2px 0;
+    font-size: 15px;
+  }
+
+  select[multiple] option:checked {
+    background: var(--accent);
+    color: #0f1117;
+    font-weight: 600;
+  }
+
+  /* ── BLOCK PICKER ── */
+  .block-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .block-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--r);
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    min-height: 46px;
+  }
+
+  .block-btn.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+
+  /* ── SCHEDULE BOARD ── */
+  .slot-row {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .slot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .slot-time {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .slot-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .slot-teams {
+    padding: 8px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 40px;
+    align-items: center;
+  }
+
+  .slot-empty {
+    font-size: 13px;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .slot-team-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 5px 10px 5px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .chip-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 5px var(--green);
+  }
+
+  .chip-remove {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0 0 0 2px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .chip-remove:hover { color: var(--red); }
+
+  /* ── SCHEDULE TABLE ── */
+  .sched-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--rl);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .sched-th-time, .sched-th-teams {
+    background: var(--bg3);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sched-th-time { width: 90px; }
+
+  .sched-row { border-bottom: 1px solid var(--border); }
+  .sched-row:last-child { border-bottom: none; }
+
+  .sched-time {
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    vertical-align: top;
+    width: 90px;
+  }
+
+  .sched-teams {
+    padding: 8px 14px;
+    font-size: 13px;
+    vertical-align: top;
+  }
+
+  .sched-chip {
+    display: inline-block;
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2px 3px 2px 0;
+  }
+
+  .sched-none {
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  /* ── SCHEDULE ── */
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .schedule-slot {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: var(--r);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--rl);
+    padding: 24px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .modal h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .modal p {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .modal-actions .btn {
+    flex: 1;
+  }
+
+  .pin-input {
+    letter-spacing: 6px;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* ── MATCH HISTORY ── */
+  .match-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+
+  .match-teams {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .match-score {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .win-tag { color: var(--green); }
+  .loss-tag { color: var(--red); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 16px 0 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="app-title">🌽 PDA Independence Day Cornhole Tournament</div>
+      <div class="app-subtitle">brought to you by the VRG</div>
+    </div>
+    <button class="reset-btn" onclick="promptReset()">Reset Tournament</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('teams')">Teams</button>
+    <button class="tab" onclick="showTab('open')">Schedule</button>
+    <button class="tab" onclick="showTab('log')">Scores</button>
+    <button class="tab" onclick="showTab('standings')">Standings</button>
+    <button class="tab" onclick="showTab('rules')">Rules</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══════════ TEAMS TAB ══════════ -->
+  <div id="page-teams" class="page active">
+    <div class="card">
+      <div class="card-title">Register a Team</div>
+      <div class="form-group">
+        <label>Team Name</label>
+        <input type="text" id="team-name" placeholder="e.g. Bag Slingers">
+      </div>
+      <div class="form-group">
+        <label>Player 1</label>
+        <input type="text" id="player1" placeholder="First name">
+      </div>
+      <div class="form-group">
+        <label>Player 2</label>
+        <input type="text" id="player2" placeholder="First name">
+      </div>
+      <button class="btn btn-primary" onclick="registerTeam()">Register Team</button>
+    </div>
+
+    <div class="section-label">Registered Teams</div>
+    <div id="teams-list">
+      <div class="empty">
+        <div class="empty-icon">🎯</div>
+        No teams registered yet
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ SCHEDULE TAB ══════════ -->
+  <div id="page-open" class="page">
+    <div class="card">
+      <div class="card-title">Post Your Availability</div>
+      <div class="form-group">
+        <label>Team</label>
+        <select id="open-team-select" onchange="onTeamSelectChange()">
+          <option value="">Select your team…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Available Time Blocks (tap to select multiple)</label>
+        <select id="block-picker-select" multiple style="height: 220px; font-size: 15px; padding: 4px;">
+          <option value="10:00 AM">10:00 AM</option>
+          <option value="10:30 AM">10:30 AM</option>
+          <option value="11:00 AM">11:00 AM</option>
+          <option value="11:30 AM">11:30 AM</option>
+          <option value="12:00 PM">12:00 PM</option>
+          <option value="12:30 PM">12:30 PM</option>
+          <option value="1:00 PM">1:00 PM</option>
+          <option value="1:30 PM">1:30 PM</option>
+          <option value="2:00 PM">2:00 PM</option>
+          <option value="2:30 PM">2:30 PM</option>
+          <option value="3:00 PM">3:00 PM</option>
+          <option value="3:30 PM">3:30 PM</option>
+        </select>
+        <div style="font-size:12px; color:var(--text3); margin-top:6px;">Hold Ctrl / Cmd to select multiple, or just tap each one on mobile</div>
+      </div>
+      <button class="btn btn-primary" onclick="postAvailable()">Post Availability</button>
+    </div>
+
+    <div class="section-label">Schedule Board</div>
+    <div id="schedule-board"></div>
+  </div>
+
+  <!-- ══════════ LOG MATCH TAB ══════════ -->
+  <div id="page-log" class="page">
+    <div class="card">
+      <div class="card-title">Log a Match Result</div>
+      <div class="form-group">
+        <label>Winning Team</label>
+        <select id="log-winner">
+          <option value="">Select winner…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Losing Team</label>
+        <select id="log-loser">
+          <option value="">Select loser…</option>
+        </select>
+      </div>
+      <div class="divider"></div>
+      <div class="score-row">
+        <div class="form-group">
+          <label>Winner Score</label>
+          <input type="number" id="score-winner" placeholder="21" min="0" max="99">
+        </div>
+        <div class="form-group">
+          <label>Loser Score</label>
+          <input type="number" id="score-loser" placeholder="0" min="0" max="99">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="logMatch()">Submit Result</button>
+    </div>
+
+    <div class="section-label">Recent Matches</div>
+    <div id="match-history">
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        No matches logged yet
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ STANDINGS TAB ══════════ -->
+  <div id="page-standings" class="page">
+    <div id="standings-list">
+      <div class="empty">
+        <div class="empty-icon">🏆</div>
+        Standings will appear after teams play
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ RULES TAB ══════════ -->
+  <div id="page-rules" class="page">
+
+    <div class="rules-section">
+      <h3>How It Works</h3>
+      <ul>
+        <li>📋 <strong>Register your team</strong> on the Teams tab — takes 30 seconds</li>
+        <li>📅 <strong>Pick your time blocks</strong> on the Schedule tab so other teams know when you're free</li>
+        <li>🤝 <strong>Find a team</strong> that shares your slot, shake hands, and get to the boards</li>
+        <li>🌽 <strong>Show up and play</strong> — games are 20 minutes or first to 21+</li>
+        <li>📱 <strong>Report your scores</strong> on the Scores tab right after your game</li>
+        <li>🏆 <strong>Check the Standings</strong> tab to see where you stack up</li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>Game Schedule</h3>
+      <p>Games are played in 30-minute blocks. Find a team to play and pick your slot!</p>
+      <div class="schedule-grid" style="margin-top:10px;">
+        <div class="schedule-slot">10:00 AM</div>
+        <div class="schedule-slot">10:30 AM</div>
+        <div class="schedule-slot">11:00 AM</div>
+        <div class="schedule-slot">11:30 AM</div>
+        <div class="schedule-slot">12:00 PM</div>
+        <div class="schedule-slot">12:30 PM</div>
+        <div class="schedule-slot">1:00 PM</div>
+        <div class="schedule-slot">1:30 PM</div>
+        <div class="schedule-slot">2:00 PM</div>
+        <div class="schedule-slot">2:30 PM</div>
+        <div class="schedule-slot">3:00 PM</div>
+        <div class="schedule-slot">3:30 PM</div>
+      </div>
+    </div>
+
+    <div class="rules-section">
+      <h3>Game Rules</h3>
+      <ul>
+        <li>First team to reach <strong>21 or more points</strong> wins</li>
+        <li><strong>20-minute time limit</strong> — highest score wins if time runs out</li>
+        <li>Bag in the hole = <strong>3 points</strong></li>
+        <li>Bag on the board = <strong>1 point</strong></li>
+        <li>Cancellation scoring — only the net difference is counted each round</li>
+        <li>Bags that bounce off the ground don't count</li>
+        <li>Boards set <strong>27 feet apart</strong></li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>Tournament Format</h3>
+      <ul>
+        <li>Self-scheduled — find a team, pick a block, play</li>
+        <li>Minimum <strong>2 games</strong> to qualify for prizes</li>
+        <li>Maximum <strong>4 games</strong> per team</li>
+        <li>Both teams <strong>enter scores on the app</strong> immediately after each game</li>
+        <li>Teams ranked by Glicko-2 rating (accounts for opponent strength, not just wins)</li>
+        <li>Tiebreaker: team with more games played wins</li>
+      </ul>
+    </div>
+
+    <div class="rules-section">
+      <h3>Prizes</h3>
+      <div class="prize-item">
+        <div class="prize-emoji">🥇</div>
+        <div class="prize-info">
+          <div class="prize-place">1st Place</div>
+          <div class="prize-desc">Bragging rights. Eternal glory. Insufferable for at least 12 months.</div>
+        </div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-emoji">🥈</div>
+        <div class="prize-info">
+          <div class="prize-place">2nd Place</div>
+          <div class="prize-desc">Less bragging rights. You were this close. We'll all forget by Monday.</div>
+        </div>
+      </div>
+      <div class="prize-item">
+        <div class="prize-emoji">🥉</div>
+        <div class="prize-info">
+          <div class="prize-place">3rd Place</div>
+          <div class="prize-desc">Technically a podium finish. Statistically, also almost last.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══════════ PIN MODAL ══════════ -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal">
+    <h3>🔒 Admin Reset</h3>
+    <p>Enter the 4-digit PIN to reset all tournament data. This cannot be undone.</p>
+    <div class="form-group">
+      <input type="number" class="pin-input" id="pin-input" placeholder="••••" maxlength="4">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="checkPin()" style="background:var(--red);color:white;">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+const RESET_PIN = "1776";
+
+let state = {
+  teams: [],
+  matches: [],
+  available: []
+};
+
+function save() {
+  localStorage.setItem('vrg_cornhole', JSON.stringify(state));
+}
+
+function load() {
+  const raw = localStorage.getItem('vrg_cornhole');
+  if (raw) {
+    try { state = JSON.parse(raw); } catch(e) {}
+  }
+}
+
+// ════════════════════════════════════════════
+//  GLICKO-2
+// ════════════════════════════════════════════
+const G2 = {
+  TAU: 0.3,
+  Q: Math.log(10) / 400,
+
+  g(rd) {
+    return 1 / Math.sqrt(1 + 3 * this.Q * this.Q * rd * rd / (Math.PI * Math.PI));
+  },
+
+  E(r, rj, rdj) {
+    return 1 / (1 + Math.exp(-this.g(rdj) * this.Q * (r - rj)));
+  },
+
+  update(team, opponents) {
+    // Convert to Glicko-2 scale
+    const mu  = (team.rating - 1500) / 173.7178;
+    const phi = team.rd / 173.7178;
+    const sig = team.sigma;
+
+    let v_inv = 0;
+    let delta_sum = 0;
+
+    for (const opp of opponents) {
+      const mu_j  = (opp.rating - 1500) / 173.7178;
+      const phi_j = opp.rd / 173.7178;
+      const gj    = this.g(phi_j);
+      const Ej    = this.E(mu, mu_j, phi_j);
+      v_inv      += gj * gj * Ej * (1 - Ej);
+      delta_sum  += gj * (opp.score - Ej);
+    }
+
+    const v     = 1 / v_inv;
+    const delta = v * delta_sum;
+
+    // Iterative volatility
+    const a = Math.log(sig * sig);
+    const f = (x) => {
+      const ex = Math.exp(x);
+      const d2 = phi * phi + v + ex;
+      return (ex * (delta * delta - d2)) / (2 * d2 * d2) - (x - a) / (this.TAU * this.TAU);
+    };
+
+    let A = a;
+    let B = delta * delta > phi * phi + v
+      ? Math.log(delta * delta - phi * phi - v)
+      : (() => { let k = 1; while (f(a - k * this.TAU) < 0) k++; return a - k * this.TAU; })();
+
+    let fA = f(A), fB = f(B);
+    for (let i = 0; i < 100; i++) {
+      const C = A + (A - B) * fA / (fB - fA);
+      const fC = f(C);
+      if (fB * fC < 0) { A = B; fA = fB; } else { fA /= 2; }
+      B = C; fB = fC;
+      if (Math.abs(B - A) < 1e-6) break;
+    }
+
+    const sig_new  = Math.exp(A / 2);
+    const phi_star = Math.sqrt(phi * phi + sig_new * sig_new);
+    const phi_new  = 1 / Math.sqrt(1 / (phi_star * phi_star) + 1 / v);
+    const mu_new   = mu + phi_new * phi_new * delta_sum;
+
+    return {
+      rating: mu_new  * 173.7178 + 1500,
+      rd:     phi_new * 173.7178,
+      sigma:  sig_new
+    };
+  }
+};
+
+function newTeam(name, p1, p2) {
+  return {
+    id: Date.now() + Math.random(),
+    name, p1, p2,
+    rating: 1500,
+    rd: 175,
+    sigma: 0.06,
+    wins: 0,
+    losses: 0,
+    games: 0
+  };
+}
+
+// ════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const tabs = ['teams','open','log','standings','rules'];
+  document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
+
+  if (name === 'log' || name === 'open') populateSelects();
+  if (name === 'open') {
+    renderScheduleBoard();
+    document.querySelector('#page-open .btn-primary').textContent = 'Post Availability';
+    clearBlockPicker();
+  }
+  if (name === 'standings') renderStandings();
+  if (name === 'log') renderMatchHistory();
+}
+
+// ════════════════════════════════════════════
+//  TEAMS
+// ════════════════════════════════════════════
+function registerTeam() {
+  const name = document.getElementById('team-name').value.trim();
+  const p1   = document.getElementById('player1').value.trim();
+  const p2   = document.getElementById('player2').value.trim();
+
+  if (!name || !p1 || !p2) { showToast('Fill in all fields', 'error'); return; }
+  if (state.teams.find(t => t.name.toLowerCase() === name.toLowerCase())) {
+    showToast('Team name already taken', 'error'); return;
+  }
+
+  state.teams.push(newTeam(name, p1, p2));
+  save();
+
+  document.getElementById('team-name').value = '';
+  document.getElementById('player1').value = '';
+  document.getElementById('player2').value = '';
+
+  renderTeams();
+  showToast('Team registered!', 'success');
+}
+
+function removeTeam(id) {
+  state.teams = state.teams.filter(t => t.id !== id);
+  save();
+  renderTeams();
+  showToast('Team removed');
+}
+
+function renderTeams() {
+  const el = document.getElementById('teams-list');
+  if (!state.teams.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🎯</div>No teams registered yet</div>`;
+    return;
+  }
+  el.innerHTML = state.teams.map(t => `
+    <div class="team-item">
+      <div class="team-info">
+        <div class="team-name">${esc(t.name)}</div>
+        <div class="team-players">${esc(t.p1)} &amp; ${esc(t.p2)}</div>
+      </div>
+      <div class="team-record">
+        ${t.wins}W – ${t.losses}L
+        <div class="games-count">${t.games} game${t.games !== 1 ? 's' : ''}</div>
+      </div>
+      <button class="btn btn-danger" onclick="removeTeam(${t.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ════════════════════════════════════════════
+//  OPEN TO PLAY
+// ════════════════════════════════════════════
+const TIME_BLOCKS = [
+  '10:00 AM','10:30 AM','11:00 AM','11:30 AM',
+  '12:00 PM','12:30 PM','1:00 PM','1:30 PM',
+  '2:00 PM','2:30 PM','3:00 PM','3:30 PM'
+];
+
+function initBlockPicker() {
+  // nothing to init — using native multi-select
+}
+
+function toggleBlock(btn) {
+  // unused
+}
+
+function getSelectedBlocks() {
+  const sel = document.getElementById('block-picker-select');
+  return [...sel.options].filter(o => o.selected).map(o => o.value);
+}
+
+function clearBlockPicker() {
+  const sel = document.getElementById('block-picker-select');
+  [...sel.options].forEach(o => o.selected = false);
+}
+
+function onTeamSelectChange() {
+  const id = parseFloat(document.getElementById('open-team-select').value);
+  const existing = state.available.find(a => a.id === id);
+  const sel = document.getElementById('block-picker-select');
+  // Pre-select their existing blocks if already posted
+  [...sel.options].forEach(o => {
+    o.selected = existing ? existing.blocks.includes(o.value) : false;
+  });
+  const btn = document.querySelector('#page-open .btn-primary');
+  btn.textContent = existing ? 'Update Availability' : 'Post Availability';
+}
+
+function postAvailable() {
+  const sel    = document.getElementById('open-team-select');
+  const id     = parseFloat(sel.value);
+  const blocks = getSelectedBlocks();
+
+  if (!id) { showToast('Select your team', 'error'); return; }
+  if (!blocks.length) { showToast('Pick at least one time block', 'error'); return; }
+
+  const team = state.teams.find(t => t.id === id);
+  if (!team) return;
+
+  if (team.games >= 4) {
+    showToast('Max 4 games reached for this team', 'error'); return;
+  }
+
+  // Remove existing entry for this team then re-add with updated blocks
+  state.available = state.available.filter(a => a.id !== id);
+  state.available.push({ id, name: team.name, blocks });
+  save();
+  renderScheduleBoard();
+  clearBlockPicker();
+  document.getElementById('open-team-select').value = '';
+  document.querySelector('#page-open .btn-primary').textContent = 'Post Availability';
+  showToast(`${team.name} updated!`, 'success');
+}
+
+function removeAvailable(id) {
+  state.available = state.available.filter(a => a.id !== id);
+  save();
+  renderScheduleBoard();
+}
+
+function renderScheduleBoard() {
+  const el = document.getElementById('schedule-board');
+  if (!el) return;
+
+  let html = `
+    <table class="sched-table">
+      <thead>
+        <tr>
+          <th class="sched-th-time">Time</th>
+          <th class="sched-th-teams">Teams Available</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  TIME_BLOCKS.forEach(block => {
+    const teams = state.available.filter(a => a.blocks.includes(block));
+    const teamNames = teams.length
+      ? teams.map(a => `<span class="sched-chip">${esc(a.name)}</span>`).join(' ')
+      : `<span class="sched-none">—</span>`;
+    html += `
+      <tr class="sched-row">
+        <td class="sched-time">${block}</td>
+        <td class="sched-teams">${teamNames}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  el.innerHTML = html;
+}
+
+// ════════════════════════════════════════════
+//  LOG MATCH
+// ════════════════════════════════════════════
+function populateSelects() {
+  const opts = state.teams.map(t => `<option value="${t.id}">${esc(t.name)}</option>`).join('');
+  const blank = `<option value="">Select team…</option>`;
+
+  ['open-team-select','log-winner','log-loser'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = blank + opts;
+  });
+}
+
+function logMatch() {
+  const winnerId = parseFloat(document.getElementById('log-winner').value);
+  const loserId  = parseFloat(document.getElementById('log-loser').value);
+  const scoreW   = parseInt(document.getElementById('score-winner').value) || 0;
+  const scoreL   = parseInt(document.getElementById('score-loser').value) || 0;
+
+  if (!winnerId || !loserId) { showToast('Select both teams', 'error'); return; }
+  if (winnerId === loserId)  { showToast('Teams must be different', 'error'); return; }
+
+  const winner = state.teams.find(t => t.id === winnerId);
+  const loser  = state.teams.find(t => t.id === loserId);
+  if (!winner || !loser) return;
+
+  if (winner.games >= 4) { showToast(`${winner.name} already played 4 games`, 'error'); return; }
+  if (loser.games >= 4)  { showToast(`${loser.name} already played 4 games`, 'error'); return; }
+
+  if (scoreW < scoreL) { showToast('Winner score must be ≥ loser score', 'error'); return; }
+
+  // Glicko-2 update
+  const wNew = G2.update(winner, [{ rating: loser.rating,  rd: loser.rd,  sigma: loser.sigma,  score: 1 }]);
+  const lNew = G2.update(loser,  [{ rating: winner.rating, rd: winner.rd, sigma: winner.sigma, score: 0 }]);
+
+  winner.rating = wNew.rating; winner.rd = wNew.rd; winner.sigma = wNew.sigma;
+  loser.rating  = lNew.rating; loser.rd  = lNew.rd; loser.sigma  = lNew.sigma;
+
+  winner.wins++;   winner.games++;
+  loser.losses++;  loser.games++;
+
+  // Remove from available
+  state.available = state.available.filter(a => a.id !== winnerId && a.id !== loserId);
+
+  // Log match
+  state.matches.unshift({
+    ts: Date.now(),
+    winnerName: winner.name,
+    loserName:  loser.name,
+    scoreW, scoreL
+  });
+
+  save();
+
+  // Clear fields
+  ['log-winner','log-loser','score-winner','score-loser']
+    .forEach(id => { document.getElementById(id).value = ''; });
+
+  renderMatchHistory();
+  showToast('Match logged!', 'success');
+}
+
+function renderMatchHistory() {
+  const el = document.getElementById('match-history');
+  if (!state.matches.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div>No matches logged yet</div>`;
+    return;
+  }
+  el.innerHTML = state.matches.slice(0, 10).map(m => `
+    <div class="match-item">
+      <div class="match-teams">
+        <span class="win-tag">W: ${esc(m.winnerName)}</span>
+        &nbsp;·&nbsp;
+        <span class="loss-tag">L: ${esc(m.loserName)}</span>
+      </div>
+      <div class="match-score">${m.scoreW} – ${m.scoreL}</div>
+    </div>
+  `).join('');
+}
+
+// ════════════════════════════════════════════
+//  STANDINGS
+// ════════════════════════════════════════════
+function renderStandings() {
+  const el = document.getElementById('standings-list');
+  if (!state.teams.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🏆</div>Standings will appear after teams play</div>`;
+    return;
+  }
+
+  const sorted = [...state.teams].sort((a, b) => {
+    const aQ = a.games >= 2, bQ = b.games >= 2;
+    if (aQ && !bQ) return -1;
+    if (!aQ && bQ) return 1;
+    if (a.rating !== b.rating) return b.rating - a.rating;
+    return a.rd - b.rd; // tiebreaker: lower RD = more proven
+  });
+
+  const rankEmojis = ['🥇','🥈','🥉'];
+  let qualRank = 0;
+
+  el.innerHTML = sorted.map((t, i) => {
+    const qualified = t.games >= 2;
+    if (qualified) qualRank++;
+    const rankDisplay = qualified
+      ? (rankEmojis[qualRank - 1] || `<span class="rank-${qualRank > 3 ? '' : qualRank}">${qualRank}</span>`)
+      : '—';
+
+    // Confidence: lower RD = higher confidence (RD range ~100–175)
+    const conf = Math.max(0, Math.min(100, Math.round((1 - (t.rd - 100) / 75) * 100)));
+
+    return `
+      <div class="standing-item">
+        <div class="standing-row">
+          <div class="standing-rank">${rankDisplay}</div>
+          <div class="standing-info">
+            <div class="standing-name">
+              ${esc(t.name)}
+              ${!qualified ? '<span class="provisional-tag">Provisional</span>' : ''}
+            </div>
+            <div class="standing-players">${esc(t.p1)} &amp; ${esc(t.p2)}</div>
+          </div>
+          <div class="standing-stats">
+            <div class="standing-rating">${Math.round(t.rating)}</div>
+            <div class="standing-record">${t.wins}W – ${t.losses}L</div>
+          </div>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-fill" style="width:${conf}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+//  RESET + PIN
+// ════════════════════════════════════════════
+function promptReset() {
+  document.getElementById('pin-input').value = '';
+  document.getElementById('pin-modal').classList.add('show');
+  setTimeout(() => document.getElementById('pin-input').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('pin-modal').classList.remove('show');
+}
+
+function checkPin() {
+  const entered = document.getElementById('pin-input').value.trim();
+  if (entered === RESET_PIN) {
+    closeModal();
+    state = { teams: [], matches: [], available: [] };
+    save();
+    renderTeams();
+    renderScheduleBoard();
+    renderMatchHistory();
+    renderStandings();
+    showToast('Tournament reset', 'success');
+    showTab('teams');
+  } else {
+    showToast('Wrong PIN', 'error');
+    document.getElementById('pin-input').value = '';
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('pin-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Allow Enter key in PIN field
+document.getElementById('pin-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPin();
+});
+
+// ════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 2500);
+}
+
+// ════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+load();
+renderTeams();
+renderScheduleBoard();
+renderMatchHistory();
+initBlockPicker();
+</script>
+</body>
+</html>
