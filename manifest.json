@@ -1,0 +1,9 @@
+{
+  "short_name": "PDA Cornhole",
+  "name": "PDA Independence Day Cornhole Tournament",
+  "start_url": "index.html",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "display": "fullscreen",
+  "orientation": "portrait"
+}

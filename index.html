@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="data:application/json,{"name":"PDA Cornhole","short_name":"Cornhole","display":"standalone","start_url":".","background_color":"%230f1117","theme_color":"%230f1117"}">
+<link rel="manifest" href="manifest.json">
 <title>VRG Cornhole</title>
 <style>
   :root {
@@ -753,6 +753,7 @@
       <div class="app-subtitle">brought to you by the VRG</div>
     </div>
     <button class="reset-btn" onclick="promptReset()">Reset Tournament</button>
+      <button class="reset-btn" onclick="openFullscreen()" style="border-color:var(--accent);color:var(--accent);">⛶ Full Screen</button>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('teams')">Teams</button>
@@ -1459,6 +1460,18 @@ function esc(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ════════════════════════════════════════════
+//  FULLSCREEN
+// ════════════════════════════════════════════
+function openFullscreen() {
+  const elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  }
 }
 
 // ════════════════════════════════════════════
